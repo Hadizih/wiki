@@ -23,8 +23,8 @@ def save_entry(title, content):
     if default_storage.exists(filename):
         default_storage.delete(filename)
 
-    
-    default_storage.save(filename, ContentFile(content))
+    formatted_content = content.replace("\r\n", "\n")
+    default_storage.save(filename, ContentFile(formatted_content))
 
 
 def get_entry(title):
