@@ -31,3 +31,23 @@ def random_entry(request):
             "title": title,
             "content": util.get_entry(title)
         })
+
+def new_entry(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        entry_list = [entry.lower() for entry in util.list_entries()]
+
+        if title.lower() in entry_list:
+            return render(request, "encyclopedia/error.html", {
+                "message": "Entry already exists."
+            })
+        else:
+            util.save_entry(title, content)
+            return render(request, "encyclopedia/entry.html", {
+                "title": title,
+                "content": util.get_entry(title)
+            })
+    
+    else:
+        return render(request, "encyclopedia/new.html")
