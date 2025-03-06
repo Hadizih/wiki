@@ -8,5 +8,12 @@
     <p>
         {{ content }}
     </p>
+    <div id="edit_page">
+        <form id="form_edit" action="{% url 'edit' %}" method="post">
+            {% csrf_token %}
+     <div>
+        <input type="hidden" name="title" value="{{ title }}">       
+        <button type="submit">Edit</button>
+    </div>
 
 {% endblock %}

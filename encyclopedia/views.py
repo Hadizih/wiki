@@ -12,16 +12,28 @@ def index(request):
 
 def entry(request, title):
 
-    if title in util.list_entries():
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        util.save_entry(title, content)
+
         return render(request, "encyclopedia/entry.html", {
             "title": title,
             "content": util.get_entry(title)
         })
     
     else:
-        return render(request, "encyclopedia/error.html", {
-            "message": "Requested page was not found."
-        })
+
+        if title in util.list_entries():
+            return render(request, "encyclopedia/entry.html", {
+                "title": title,
+                "content": util.get_entry(title)
+            })
+        
+        else:
+            return render(request, "encyclopedia/error.html", {
+                "message": "Requested page was not found."
+            })
     
 def random_entry(request):
     entries = util.list_entries()
@@ -43,7 +55,8 @@ def new_entry(request):
                 "message": "Entry already exists."
             })
         else:
-            util.save_entry(title, content)
+            entry = f"# {title}\n\n{content}"
+            util.save_entry(title, entry)
             return render(request, "encyclopedia/entry.html", {
                 "title": title,
                 "content": util.get_entry(title)
@@ -51,3 +64,12 @@ def new_entry(request):
     
     else:
         return render(request, "encyclopedia/new.html")
+    
+def edit(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+
+        return render(request, "encyclopedia/edit.html", {
+            "title": title,
+            "content": util.get_entry(title)
+        })
