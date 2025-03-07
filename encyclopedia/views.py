@@ -30,13 +30,19 @@ def entry(request, title):
                 "content": util.get_markdown(title)
             })
         
-        else:
-            return render(request, "encyclopedia/error.html", {
+       
+        return render(request, "encyclopedia/error.html", {
                 "message": "Requested page was not found."
             })
     
 def random_entry(request):
     entries = util.list_entries()
+
+    if not entries:
+        return render(request, "encyclopedia/error.html", {
+            "message": "No entries found."
+        })
+
     title = random.choice(entries)
     
     return render(request, "encyclopedia/entry.html", {
@@ -75,29 +81,22 @@ def edit(request):
         })
 
 def search(request):
-    query = request.POST.get("q").lower()
+    query = request.POST.get("q").lower().strip()
     entries = util.list_entries()
-    results = []  
-
-    for entry in entries:
-        print(f"Query: {query}")
-        print(f"Entry: {entry.lower()}")
-        if query == entry.lower():
-            
-            return render(request, "encyclopedia/entry.html", {
-                "title": entry,
-                "content": util.get_markdown(entry)
-            })
-        
-        elif query in entry.lower():
-            results.append(entry)
-    
+    results = [entry for entry in entries if query in entry.lower()]  
     
     if len(results) == 0:
         return render(request, "encyclopedia/error.html", {
             "message": "No results found."
         })
     
+    elif len(results) == 1:
+        title = results[0]
+        return render(request, "encyclopedia/entry.html", {
+            "title": title,
+            "content": util.get_markdown(title)
+        })
+
     else:
         return render(request, "encyclopedia/results.html", {
                         "entries": results
