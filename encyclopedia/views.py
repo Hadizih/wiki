@@ -73,3 +73,33 @@ def edit(request):
             "title": title,
             "content": util.get_entry(title)
         })
+
+def search(request):
+    query = request.POST.get("q").lower()
+    entries = util.list_entries()
+    results = []  
+
+    for entry in entries:
+        print(f"Query: {query}")
+        print(f"Entry: {entry.lower()}")
+        if query == entry.lower():
+            
+            return render(request, "encyclopedia/entry.html", {
+                "title": entry,
+                "content": util.get_markdown(entry)
+            })
+        
+        elif query in entry.lower():
+            results.append(entry)
+    
+    
+    if len(results) == 0:
+        return render(request, "encyclopedia/error.html", {
+            "message": "No results found."
+        })
+    
+    else:
+        return render(request, "encyclopedia/results.html", {
+                        "entries": results
+                        }
+                )
