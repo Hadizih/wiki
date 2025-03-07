@@ -6,7 +6,7 @@
 
 {% block body %}
     <p>
-        {{ content }}
+        {{ content | safe }}
     </p>
     <div id="edit_page">
         <form id="form_edit" action="{% url 'edit' %}" method="post">

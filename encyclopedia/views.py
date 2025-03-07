@@ -19,7 +19,7 @@ def entry(request, title):
 
         return render(request, "encyclopedia/entry.html", {
             "title": title,
-            "content": util.get_entry(title)
+            "content": util.get_markdown(title)
         })
     
     else:
@@ -27,7 +27,7 @@ def entry(request, title):
         if title in util.list_entries():
             return render(request, "encyclopedia/entry.html", {
                 "title": title,
-                "content": util.get_entry(title)
+                "content": util.get_markdown(title)
             })
         
         else:
@@ -41,7 +41,7 @@ def random_entry(request):
     
     return render(request, "encyclopedia/entry.html", {
             "title": title,
-            "content": util.get_entry(title)
+            "content": util.get_markdown(title)
         })
 
 def new_entry(request):
@@ -59,7 +59,7 @@ def new_entry(request):
             util.save_entry(title, entry)
             return render(request, "encyclopedia/entry.html", {
                 "title": title,
-                "content": util.get_entry(title)
+                "content": util.get_markdown(title)
             })
     
     else:
